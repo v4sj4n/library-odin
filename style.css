@@ -26,8 +26,16 @@ body {
         padding: 2rem;
 
         form {
+            display: flex;
+            flex-direction: column;
             text-align: center;
             margin: 1rem;
+            width: 33svw;
+            margin: auto;
+            margin-bottom: 2rem;
+            >div{
+                margin-bottom: 1rem;
+            }
 
             input {
                 padding: 0.5rem;
@@ -106,4 +114,12 @@ body {
 
 
 
+}
+
+#read{
+    accent-color: #34d399;
+}
+textarea{
+    text-align: center;
+    padding: 0.5rem;
 }

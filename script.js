@@ -1,11 +1,12 @@
 const mainEl = document.querySelector('main')
 const booksContainer = document.getElementById('book-container')
 
-const Book = function (title, author, pages, read) {
+const Book = function (title, author, pages, read, memorable) {
     this.title = title
     this.author = author
     this.pages = pages
     this.read = read
+    this.memorable = memorable
 }
 
 
@@ -15,7 +16,6 @@ if (localStorage.getItem('savedBooks')) {
     bookList = JSON.parse(localStorage.getItem('savedBooks'))
 }
 
-console.log(bookList)
 
 function listBooks() {
     booksContainer.innerHTML = ""
@@ -46,6 +46,23 @@ function listBooks() {
         bookIsReadContainer.appendChild(bookIsReadText)
         bookIsReadContainer.appendChild(bookIsRead)
 
+        const bookDescContainer = document.createElement('div')
+
+        if (book.memorable) {
+            const bookDescTitler = document.createElement('p')
+            bookDescTitler.textContent = 'Short summary'
+            bookDescTitler.style.color = '#0f172a'
+            bookDescTitler.style.marginBottom = '0'
+            const bookDescP = document.createElement('p')
+            bookDescP.textContent = book.memorable
+            bookDescP.style.color = '#475569'
+            bookDescP.style.marginTop = '0'
+
+            bookDescContainer.appendChild(bookDescTitler)
+            bookDescContainer.appendChild(bookDescP)
+        }
+
+
         const deleteBookContainer = document.createElement('a')
         const deleteBookImage = document.createElement('img')
         const deleteBookText = document.createElement('p')
@@ -56,7 +73,9 @@ function listBooks() {
         deleteBookContainer.addEventListener('click', function () {
             const bookTit = book.title
             const bookAuth = book.author
-            const filteredBooks = bookList.filter(book => book.title !== bookTit || book.author !== bookAuth);
+            const bookPag = book.pages
+
+            const filteredBooks = bookList.filter(book => book.title !== bookTit || book.author !== bookAuth || book.pages !== bookPag);
             bookList = filteredBooks
             localStorage.setItem("savedBooks", JSON.stringify(bookList))
             listBooks()
@@ -67,6 +86,7 @@ function listBooks() {
         bookContainer.appendChild(bookAuthor)
         bookContainer.appendChild(bookPages)
         bookContainer.appendChild(bookIsReadContainer)
+        bookContainer.appendChild(bookDescContainer)
         bookContainer.appendChild(deleteBookContainer)
 
         booksContainer.appendChild(bookContainer)
@@ -87,22 +107,26 @@ if (bookList.length === 0) {
 }
 
 const addBookToList = () => {
-    const title = document.getElementById('title').value
-    const author = document.getElementById('author').value
-    const pages = document.getElementById('pages').value
-    const read = document.getElementById('read').checked
-    const newBook = new Book(title, author, pages, read)
+    const title = document.getElementById('title')
+    const author = document.getElementById('author')
+    const pages = document.getElementById('pages')
+    const read = document.getElementById('read')
+    const shortDesc = document.querySelector('textarea')
+    const newBook = new Book(title.value, author.value, pages.value, read.checked, shortDesc.value)
     bookList.push(newBook)
-    localStorage.setItem("savedBooks", JSON.stringify(bookList))
     title.value = ""
     author.value = ""
     pages.value = ""
     read.checked = false
+    shortDesc.value = ""
     listBooks()
-    console.log(newBook)
+    localStorage.setItem("savedBooks", JSON.stringify(bookList))
+
 }
 
 document.querySelector('button').addEventListener('click', function (e) {
     e.preventDefault()
     addBookToList()
+
+
 })
